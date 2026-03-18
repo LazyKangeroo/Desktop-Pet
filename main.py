@@ -1,73 +1,65 @@
 import random
 import pyautogui
-import time
+import sys
 
 from enum import Enum
 
-import sys
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer
 
-# Screen dimentions
+# Screen dimensions
 screen_width, screen_height = pyautogui.size()
 
 class Directions(Enum):
     RIGHT = ['1.png', '2.png']
     LEFT = ['3.png', '4.png']
-    UP =  1
-    DOWN = 2
 
-# ENTITIES
-class Human: # ?Mouse Cursor
-    def __init__(self):
-        pass
-
-class Snail:
-    def __init__(self):
-        self.speed = 2
-        self.pos = {
-            'x' : random.randrange(0, screen_width),
-            'y' : random.randrange(0, screen_height)
-        }
-        self.direction = "None"
-        self.velocty = {
-            'x' : 1,
-            'y' : 1
-        }
-
-    def change_direction(self):
-        pass
-
-    def move(self):
-        pass
-
-    def update(self):
-        pass
-
-# WINDOW
-class Window(QWidget):
+class Snail(QWidget):
     def __init__(self):
         super().__init__()
+
+        # Window settings
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        # Makes window click through
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
 
-    def display_img(self):
-        label = QLabel(self)
+        # Snail attributes
+        self.sprite = 0
+        self.count = 0
 
-        pixmap = QPixmap('1.png')
+        # Label (create ONCE)
+        self.label = QLabel(self)
 
-        label.setPixmap(pixmap)
-        label.setGeometry(0, 0, pixmap.width(), pixmap.height())
+        # Timer for animation
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.animate)
+        self.timer.start(100)  # update every 100ms
+
+    def animate(self):
+        self.count += 1
+
+        if self.count >= 5:
+            self.count = 0
+            self.sprite = 1 if self.sprite == 0 else 0
+
+        img = Directions.RIGHT.value[self.sprite]
+        self.updateSnail(img)
+
+    def updateSnail(self, img):
+        pixmap = QPixmap(img)
+
+        self.label.setPixmap(pixmap)
+        self.label.setGeometry(0, 0, pixmap.width(), pixmap.height())
 
         self.resize(pixmap.width(), pixmap.height())
+
 
 # RUN
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    win = Window()
-    win.display_img()
+
+    win = Snail()
     win.show()
+
     sys.exit(app.exec())
