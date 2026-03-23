@@ -10,6 +10,9 @@ class Directions(Enum):
     UP = ['sprites/cat/forward_1.png','sprites/cat/forward_2.png','sprites/cat/forward_3.png','sprites/cat/forward_4.png']
     DOWN = ['sprites/cat/back_1.png','sprites/cat/back_2.png','sprites/cat/back_3.png','sprites/cat/back_4.png']
 
+SPRITE_SPEED = 2
+STOPPING_DISTANCE = 5
+
 class Cat:
         def __init__(self, win):
             # Snail attributes
@@ -22,7 +25,7 @@ class Cat:
         def sprite_handle(self):
             self.count += 1
 
-            if self.count >= 3:
+            if self.count >= SPRITE_SPEED:
                 self.count = 0
                 if self.sprite < 3:
                      self.sprite += 1
@@ -46,7 +49,7 @@ class Cat:
             direction = self.get_direction()
 
             idle = False
-            if distance < 5:
+            if distance < STOPPING_DISTANCE:
                 idle = True
             else:
                 speed = 10
@@ -83,3 +86,17 @@ class Cat:
             else:
                 #? This covers the gap from 135 to 180 and -180 to -135
                 return Directions.DOWN
+
+        def idle(self):
+            # this will take effect when the user doenst move the curser for a set amount of time, 2 minutes or so.
+            # 3 things may happen
+            # first if the cursor is on the desktop and near any icons the cat will move the icons arround. (no apps being used)
+            # second an app is open the cat will start dragging around the cursor
+            # thirdly this can happen whenever if the user is inactive enought, a random messge will be displayed in notepad by the cat
+            #! Dragging cursor around
+            action = self.dragging_mouse
+
+            return action
+
+        def dragging_mouse(self):
+            print('Dragging mouse')

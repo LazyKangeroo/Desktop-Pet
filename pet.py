@@ -4,7 +4,9 @@ import sys
 from snail import Snail
 from cat import Cat
 
-from PyQt6.QtGui import QPixmap, QCursor
+from events import MouseIdleDetector
+
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel
 from PyQt6.QtCore import Qt, QTimer, QPoint
 
@@ -34,6 +36,7 @@ class Main(QWidget):
         self.timer = QTimer()
         self.timer.timeout.connect(self.animate)
         self.timer.start(100)  # update every 100ms
+        self.timer_count = 0
 
         #! Type
         # will be dependend on input before hand
@@ -46,7 +49,12 @@ class Main(QWidget):
                 print('No Sprite Type chosen')
                 sys.exit()
 
+        # Mouse detector
+        self.detector = MouseIdleDetector(5,self.pet.idle())
+        self.detector.start()
+
     def animate(self):
+        #! Cycle
         sprite = self.pet.sprite_handle()
 
         #? Updated Pos from pet class
@@ -60,7 +68,6 @@ class Main(QWidget):
         if updatedPos['direction'] is not None:
             img = updatedPos['direction'].value[sprite]
         else:
-            print(updatedPos[''])
             return
 
         self.updateImg(img)
@@ -75,6 +82,7 @@ class Main(QWidget):
 
 # RUN
 if __name__ == "__main__":
+    #? App
     app = QApplication(sys.argv)
 
     win = Main()
