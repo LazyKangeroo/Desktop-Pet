@@ -66,4 +66,4 @@ class Snail:
             }
 
         def idle(self):
-             pass
+            return None

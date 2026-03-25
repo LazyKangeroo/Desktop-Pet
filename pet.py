@@ -22,6 +22,7 @@ class Main(QWidget):
         super().__init__()
 
         # Window settings
+        self.setWindowTitle('Pet')
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
@@ -50,8 +51,9 @@ class Main(QWidget):
                 sys.exit()
 
         # Mouse detector
-        self.detector = MouseIdleDetector(5,self.pet.idle())
-        self.detector.start()
+        if self.pet.idle() != None:
+            self.detector = MouseIdleDetector(self.pet)
+            self.detector.start()
 
     def animate(self):
         #! Cycle

@@ -1,7 +1,8 @@
 import math
 
-from enum import Enum
+from events import MousePositioner
 
+from enum import Enum
 from PyQt6.QtGui import QCursor
 
 class Directions(Enum):
@@ -21,6 +22,12 @@ class Cat:
 
             #? Window object
             self.win = win
+
+            #? This gets pos and size
+            self.geo = self.win.geometry()
+
+            #? Mouse handler object
+            self.mouse = MousePositioner()
 
         def sprite_handle(self):
             self.count += 1
@@ -88,15 +95,17 @@ class Cat:
                 return Directions.DOWN
 
         def idle(self):
-            # this will take effect when the user doenst move the curser for a set amount of time, 2 minutes or so.
-            # 3 things may happen
-            # first if the cursor is on the desktop and near any icons the cat will move the icons arround. (no apps being used)
-            # second an app is open the cat will start dragging around the cursor
-            # thirdly this can happen whenever if the user is inactive enought, a random messge will be displayed in notepad by the cat
-            #! Dragging cursor around
-            action = self.dragging_mouse
+            #! Move icons
+            if not self.mouse.ontop_win():
+                return self.moving_icons
 
-            return action
+            #! Dragging cursor around
+            #* No conditions are required for this one
+            #* since it won't interfere with the windows or icons
+            return self.dragging_mouse
+
+        def moving_icons(self):
+            print('Move icons')
 
         def dragging_mouse(self):
             print('Dragging mouse')
