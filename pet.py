@@ -1,6 +1,8 @@
 import pyautogui
 import sys
 
+from enum import Enum
+
 from snail import Snail
 from cat import Cat
 
@@ -13,9 +15,21 @@ from PyQt6.QtCore import Qt, QTimer, QPoint
 # Screen dimensions
 screen_width, screen_height = pyautogui.size()
 
+#! Pets
+class Pets(Enum):
+    CAT = 'cat'
+    SNAIL = 'snail'
+
 #! Getting commandline arguement
-# Determines the type of sprite used
 arguement = (sys.argv[1]).lower()
+
+#? List command
+pet_names = [pet.value for pet in Pets]
+if arguement == 'list':
+    print('Pet Names:')
+    for name in pet_names:
+        print(f' - {name}')
+    sys.exit()
 
 class Main(QWidget):
     def __init__(self):
@@ -42,9 +56,9 @@ class Main(QWidget):
         #! Type
         # will be dependend on input before hand
         match arguement:
-            case 'snail':
+            case Pets.SNAIL.value:
                 self.pet = Snail(self)
-            case 'cat':
+            case Pets.CAT.value:
                 self.pet = Cat(self)
             case _:
                 print('No Sprite Type chosen')
